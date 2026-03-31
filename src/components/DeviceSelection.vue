@@ -45,11 +45,20 @@
         </div>
       </div>
     </div>
+
+    <footer class="footer">
+      <span class="version">Версия {{ appVersion }}</span>
+    </footer>
   </div>
 </template>
 
 <script setup>
+import { ref } from 'vue'
+
 const emit = defineEmits(['select-device'])
+
+// Версия приложения из package.json (обновляется вручную при релизе)
+const appVersion = ref('1.5.0')
 
 const selectDevice = (deviceId) => {
   emit('select-device', deviceId)
@@ -136,5 +145,17 @@ h1 {
   background: #f5f5f5;
   padding: 4px 8px;
   border-radius: 6px;
+}
+
+.footer {
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid #e0e0e0;
+  text-align: center;
+}
+
+.version {
+  font-size: 12px;
+  color: #999;
 }
 </style>

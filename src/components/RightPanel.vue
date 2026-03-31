@@ -1,5 +1,9 @@
 <template>
   <div class="right-panel" :class="{ complete: buildStore.isComplete }">
+    <div class="panel-header">
+      <button class="back-btn" @click="goBack">← Назад к выбору устройств</button>
+    </div>
+    
     <div v-if="!buildStore.currentDevice">
       <p>Загрузка...</p>
     </div>
@@ -45,6 +49,12 @@ import { useBuildStore } from '../stores/buildStore'
 
 const buildStore = useBuildStore()
 
+const emit = defineEmits(['back-to-selection'])
+
+const goBack = () => {
+  emit('back-to-selection')
+}
+
 const onDrop = (slotId, event) => {
   const rawData = event.dataTransfer.getData('application/json')
   if (!rawData) return
@@ -58,6 +68,27 @@ const onDrop = (slotId, event) => {
 </script>
 
 <style scoped>
+.panel-header {
+  margin-bottom: 16px;
+}
+
+.back-btn {
+  background: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #666;
+  transition: all 0.2s ease;
+}
+
+.back-btn:hover {
+  background: #e0e0e0;
+  border-color: #ccc;
+  color: #333;
+}
+
 .right-panel {
   flex: 1; 
   padding: 20px;
