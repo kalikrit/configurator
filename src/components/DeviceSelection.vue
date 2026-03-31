@@ -53,12 +53,12 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { computed } from 'vue'
 
 const emit = defineEmits(['select-device'])
 
-// Версия приложения из package.json (обновляется вручную при релизе)
-const appVersion = ref('1.5.0')
+// Версия приложения автоматически из package.json через Vite
+const appVersion = __APP_VERSION__
 
 const selectDevice = (deviceId) => {
   emit('select-device', deviceId)
