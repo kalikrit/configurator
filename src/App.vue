@@ -6,7 +6,7 @@
     />
     <div v-else class="configurator-layout">
       <LeftPanel />
-      <RightPanel />
+      <RightPanel @back-to-selection="resetDevice" />
     </div>
   </div>
 </template>
@@ -26,6 +26,11 @@ const initDevice = (deviceId) => {
   if (success) {
     deviceInitialized.value = true
   }
+}
+
+const resetDevice = () => {
+  buildStore.reset()
+  deviceInitialized.value = false
 }
 </script>
 

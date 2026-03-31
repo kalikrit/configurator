@@ -40,6 +40,11 @@ export const useBuildStore = defineStore('build', () => {
     selected.value = { ...selected.value, [slotId]: null }
   }
 
+  const reset = () => {
+    currentDevice.value = null
+    selected.value = {}
+  }
+
   // Вычисляемое свойство: проверка совместимости для конкретного слота и компонента
   const isComponentCompatible = computed(() => (slotId, component) => {
     const device = currentDevice.value
@@ -86,6 +91,7 @@ export const useBuildStore = defineStore('build', () => {
     initDevice,
     selectComponent,
     removeComponent,
+    reset,
     isComponentCompatible,
     getCompatibilityReason,
     isComplete,
