@@ -20,6 +20,7 @@
           :component="component"
           :slot-id="slot.id"
           :available="isComponentAvailable(slot, component)"
+          :reason="getCompatibilityReason(slot, component)"
         />
       </div>
     </div>
@@ -38,17 +39,28 @@ const getAllComponentsForSlot = (slot) => {
 }
 
 const isComponentAvailable = (slot, component) => {
-  // Явно используем updateTrigger для реактивности
-  const trigger = buildStore.updateTrigger
-  void trigger // Просто обращаемся к переменной чтобы Vue отследил зависимость
-  
   const device = buildStore.currentDevice
   if (!device) return false
   
   const testSelected = { ...buildStore.selected, [slot.id]: component }
   
-  // Проверяем все правила
+  // Проверяем все правила совместимости
   return device.compatibilityRules.every(rule => rule.check(testSelected))
+}
+
+const getCompatibilityReason = (slot, component) => {
+  const device = buildStore.currentDevice
+  if (!device) return null
+  
+  const testSelected = { ...buildStore.selected, [slot.id]: component }
+  
+  // Находим первое правило, которое не проходит
+  for (const rule of device.compatibilityRules) {
+    if (!rule.check(testSelected)) {
+      return rule.name
+    }
+  }
+  return null
 }
 </script>
 

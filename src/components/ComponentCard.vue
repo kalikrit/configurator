@@ -12,6 +12,9 @@
     <div class="component-card__price">{{ component.price }} ₽</div>
     <div class="component-card__specs">{{ specsText }}</div>
     <div v-if="!available" class="component-card__badge">⛔ Недоступно</div>
+    <div v-if="!available && reason" class="component-card__reason">
+      {{ reason }}
+    </div>
   </div>
 </template>
 
@@ -24,7 +27,8 @@ const props = defineProps({
     type: Boolean,
     default: true
   },
-  slotId: String
+  slotId: String,
+  reason: String
 })
 
 const specsText = computed(() => {
@@ -139,5 +143,15 @@ const onDragStart = (event) => {
   padding: 2px 6px;
   border-radius: 4px;
   font-weight: bold;
+}
+
+.component-card__reason {
+  margin-top: 8px;
+  font-size: 11px;
+  color: #d32f2f;
+  font-weight: 600;
+  background: #ffebee;
+  padding: 4px 8px;
+  border-radius: 4px;
 }
 </style>
