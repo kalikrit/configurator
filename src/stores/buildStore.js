@@ -6,8 +6,7 @@ import { devices } from '../config/devices'
 export const useBuildStore = defineStore('build', () => {
   const currentDevice = ref(null)
   const selected = ref({})
-  const updateTrigger = ref(0) // Триггер для принудительного обновления
-
+  
   const initDevice = (deviceId) => {
     const device = devices[deviceId]
     if (!device) return false
@@ -20,7 +19,6 @@ export const useBuildStore = defineStore('build', () => {
     })
     selected.value = newSelected
     
-    updateTrigger.value++ // Триггерим обновление
     return true
   }
 
@@ -33,7 +31,6 @@ export const useBuildStore = defineStore('build', () => {
     
     if (allRulesPass) {
       selected.value = { ...selected.value, [slotId]: component }
-      updateTrigger.value++ // Триггерим обновление
       return true
     }
     return false
@@ -41,8 +38,31 @@ export const useBuildStore = defineStore('build', () => {
 
   const removeComponent = (slotId) => {
     selected.value = { ...selected.value, [slotId]: null }
-    updateTrigger.value++ // Триггерим обновление
   }
+
+  // Вычисляемое свойство: проверка совместимости для конкретного слота и компонента
+  const isComponentCompatible = computed(() => (slotId, component) => {
+    const device = currentDevice.value
+    if (!device || !component) return false
+    
+    const testSelected = { ...selected.value, [slotId]: component }
+    return device.compatibilityRules.every(rule => rule.check(testSelected))
+  })
+
+  // Вычисляемое свойство: получение причины несовместимости
+  const getCompatibilityReason = computed(() => (slotId, component) => {
+    const device = currentDevice.value
+    if (!device || !component) return null
+    
+    const testSelected = { ...selected.value, [slotId]: component }
+    
+    for (const rule of device.compatibilityRules) {
+      if (!rule.check(testSelected)) {
+        return `Несовместимо: ${rule.name}`
+      }
+    }
+    return null
+  })
 
   const isComplete = computed(() => {
     const device = currentDevice.value
@@ -63,10 +83,11 @@ export const useBuildStore = defineStore('build', () => {
   return {
     currentDevice,
     selected,
-    updateTrigger,
     initDevice,
     selectComponent,
     removeComponent,
+    isComponentCompatible,
+    getCompatibilityReason,
     isComplete,
     totalPrice
   }

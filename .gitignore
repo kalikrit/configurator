@@ -1,0 +1,49 @@
+```
+# Build artifacts
+dist/
+build/
+*.js
+*.css
+*.html
+
+# Dependencies
+node_modules/
+
+# Vite specific
+.vite/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Logs and temp files
+*.log
+*.tmp
+*.swp
+
+# Environment
+.env
+.env.local
+.env.*
+
+# Editors
+.vscode/
+.idea/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Coverage reports
+coverage/
+htmlcov/
+*.coverage
+
+# Distribution / packaging
+*.tar.gz
+*.whl
+*.egg
+*.egg-info/
+```
