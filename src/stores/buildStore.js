@@ -2,6 +2,8 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { components } from '../data/components'
 import { devices } from '../config/devices'
+import CompatibilityService from '../services/CompatibilityService'
+import PowerService from '../services/PowerService'
 
 export const useBuildStore = defineStore('build', () => {
   const currentDevice = ref(null)
@@ -27,7 +29,9 @@ export const useBuildStore = defineStore('build', () => {
     if (!device) return false
     
     const testSelected = { ...selected.value, [slotId]: component }
-    const allRulesPass = device.compatibilityRules.every(rule => rule.check(testSelected))
+    
+    // Используем сервис для проверки совместимости
+    const allRulesPass = CompatibilityService.checkAllRules(testSelected, device.compatibilityRules)
     
     if (allRulesPass) {
       selected.value = { ...selected.value, [slotId]: component }
@@ -51,7 +55,7 @@ export const useBuildStore = defineStore('build', () => {
     if (!device || !component) return false
     
     const testSelected = { ...selected.value, [slotId]: component }
-    return device.compatibilityRules.every(rule => rule.check(testSelected))
+    return CompatibilityService.checkAllRules(testSelected, device.compatibilityRules)
   })
 
   // Вычисляемое свойство: получение причины несовместимости
@@ -61,12 +65,8 @@ export const useBuildStore = defineStore('build', () => {
     
     const testSelected = { ...selected.value, [slotId]: component }
     
-    for (const rule of device.compatibilityRules) {
-      if (!rule.check(testSelected)) {
-        return `Несовместимо: ${rule.name}`
-      }
-    }
-    return null
+    const reason = CompatibilityService.getIncompatibilityReason(testSelected, device.compatibilityRules)
+    return reason ? `Несовместимо: ${reason}` : null
   })
 
   const isComplete = computed(() => {
@@ -85,6 +85,17 @@ export const useBuildStore = defineStore('build', () => {
     return sum
   })
 
+  // Вычисляемое свойство: расчет мощности с использованием PowerService
+  const powerInfo = computed(() => {
+    return PowerService.calculateTotalPower(selected.value)
+  })
+
+  // Вычисляемое свойство: статус проверки мощности БП
+  const powerStatus = computed(() => {
+    const psu = selected.value.psu
+    return PowerService.getPowerStatus(selected.value, psu)
+  })
+
   return {
     currentDevice,
     selected,
@@ -95,6 +106,8 @@ export const useBuildStore = defineStore('build', () => {
     isComponentCompatible,
     getCompatibilityReason,
     isComplete,
-    totalPrice
+    totalPrice,
+    powerInfo,
+    powerStatus
   }
 })
