@@ -25,7 +25,7 @@ export const CompatibilityService = {
   checkChipsetCompatibility(cpu, motherboard) {
     if (!cpu || !motherboard) return true
     
-    // Простая логика: AMD Ryzen 7000系列 требует AM5, Intel 13-го поколения требует LGA1700
+    // Простая логика: AMD Ryzen 7000 требует AM5, Intel 13-го поколения требует LGA1700
     const cpuName = cpu.name || ''
     const mbSocket = motherboard.socket || ''
     

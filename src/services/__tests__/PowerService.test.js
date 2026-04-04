@@ -144,7 +144,7 @@ describe('PowerService', () => {
 
     it('должен возвращать warning если мощности достаточно но нет запаса', () => {
       const selected = { cpu, gpu }
-      // Подбираем ситуацию где мощности刚好 достаточно но нет 30% запаса
+      // Подбираем ситуацию где мощности достаточно но нет 30% запаса
       const result = PowerService.getPowerStatus(selected, psu650)
       
       // В зависимости от расчетов это может быть error или warning
